@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificateur de Permanence Militaire</title>
+    <!-- Tailwind CSS -->
+    <link href="./assets/css/tailwind.min.css" rel="stylesheet">
+	<link href="./assets/css/fontawesome.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="./assets/css/style.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen pb-20">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-blue-800 mb-8">Planificateur de Permanence Militaire</h1>
+
+        <!-- Tab Navigation -->
+        <div class="flex justify-center mb-6 no-print">
+            <div class="flex space-x-1 rounded-xl bg-blue-100 p-1">
+                <button id="tab-schedule" class="tab-btn bg-white rounded-lg px-4 py-2 text-blue-800 font-medium">Planning</button>
+                <button id="tab-militaires" class="tab-btn rounded-lg px-4 py-2 text-blue-700 font-medium">Militaires</button>
+                <button id="tab-history" class="tab-btn rounded-lg px-4 py-2 text-blue-700 font-medium">Historique</button>
+            </div>
+        </div>
+
+        <!-- Schedule Tab -->
+        <div class="tab-content active" id="content-schedule">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4">Planning Hebdomadaire</h2>
+                <div class="mb-6 flex justify-between items-center flex-wrap">
+                    <div>
+                        <span id="current-week-display" class="text-lg font-medium"></span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="generate-this-week" class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 no-print">
+                            <i class="fas fa-calendar-week mr-1"></i> Générer cette semaine
+                        </button>
+                        <button id="generate-next-week" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 no-print">
+                            <i class="fas fa-forward mr-1"></i> Générer semaine prochaine
+                        </button>
+                        <button id="print-schedule" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 no-print">
+                            <i class="fas fa-print mr-1"></i> Imprimer
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full border border-gray-300 mb-4">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-2">Jour</th>
+                                <th class="border border-gray-300 px-4 py-2">Date</th>
+                                <th class="border border-gray-300 px-4 py-2">Militaire</th>
+                                <th class="border border-gray-300 px-4 py-2">Grade</th>
+                                <th class="border border-gray-300 px-4 py-2">Matricule</th>
+                                <th class="border border-gray-300 px-4 py-2">Téléphone</th>
+                                <th class="border border-gray-300 px-4 py-2 signature-space print-sign-border">Signature</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedule-body"></tbody>
+                    </table>
+                    <div class="signature-space print-sign-border w-full h-12 mb-2 px-6 py-4 text-center text-sm text-gray-400" style="display:none">Signature du militaire :</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Militaires Tab -->
+        <div class="tab-content" id="content-militaires">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4">Base de données des militaires</h2>
+                <div class="mb-6 p-4 border border-gray-200 rounded-md">
+                    <h3 class="text-lg font-medium mb-3">Ajouter un nouveau militaire</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet <span class="text-red-500">*</span></label>
+                            <input type="text" id="militaire-name" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                            <select id="militaire-rank" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                <option value="">-- Sélectionner --</option>
+                                <option value="Sergent">Sergent</option>
+                                <option value="Sergent chef">Sergent chef</option>
+                                <option value="Caporal">Caporal</option>
+                                <option value="Caporal chef">Caporal chef</option>
+                                <option value="MDR">MDR</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Matricule</label>
+                            <input type="text" id="militaire-matricule" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                            <input type="tel" id="militaire-phone" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="06XXXXXXXX">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                            <select id="militaire-status" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                <option value="Disponible">Disponible</option>
+                                <option value="Malade">Malade</option>
+                                <option value="En mission">En mission</option>
+                                <option value="En vacances">En vacances</option>
+                                <option value="Absent">Absent</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button id="add-militaire" class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800">
+                                <i class="fas fa-plus mr-1"></i> Ajouter le militaire
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-medium mb-3">Militaires enregistrés</h3>
+                    <div id="militaires-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historique Tab -->
+        <div class="tab-content" id="content-history">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">Historique des plannings</h2>
+                <div id="history-list" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="add-dates-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-medium" id="modal-militaire-name"></h3>
+                <button id="close-dates-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="mb-4">Ajoutez manuellement les dates de permanence précédentes (maximum 20):</p>
+            <div id="work-dates-container" class="space-y-3 mb-4"></div>
+            <div class="flex space-x-2 mb-4">
+                <button id="add-date-field" class="bg-blue-700 text-white px-3 py-1 rounded-md hover:bg-blue-800 text-sm">
+                    <i class="fas fa-plus mr-1"></i> Ajouter une date
+                </button>
+                <button id="remove-date-field" class="bg-red-700 text-white px-3 py-1 rounded-md hover:bg-red-800 text-sm">
+                    <i class="fas fa-minus mr-1"></i> Supprimer une date
+                </button>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button id="save-dates" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">
+                    <i class="fas fa-save mr-1"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="militaire-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-medium">Modifier le militaire</h3>
+                <button id="close-militaire-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
+                <input type="text" id="edit-militaire-name" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                <select id="edit-militaire-rank" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="Sergent">Sergent</option>
+                    <option value="Sergent chef">Sergent chef</option>
+                    <option value="Caporal">Caporal</option>
+                    <option value="Caporal chef">Caporal chef</option>
+                    <option value="MDR">MDR</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Matricule</label>
+                <input type="text" id="edit-militaire-matricule" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                <input type="tel" id="edit-militaire-phone" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                <select id="edit-militaire-status" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <option value="Disponible">Disponible</option>
+                    <option value="Malade">Malade</option>
+                    <option value="En mission">En mission</option>
+                    <option value="En vacances">En vacances</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </div>
+            <input type="hidden" id="edit-militaire-id">
+            <div class="flex justify-end space-x-2">
+                <button id="delete-militaire" class="bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800">
+                    <i class="fas fa-trash mr-1"></i> Supprimer
+                </button>
+                <button id="save-militaire" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">
+                    <i class="fas fa-save mr-1"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="./assets/js/app.js"></script>
+</body>
+</html>
