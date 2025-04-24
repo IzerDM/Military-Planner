@@ -1,0 +1,46 @@
+{
+  "name": "military-planner",
+  "productName": "Military Duty Planner",
+  "version": "1.0.0",
+  "description": "Military Duty Planning Application",
+  "author": "IzerDM <contact@example.com>",
+  "copyright": "Copyright © 2025 IzerDM",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --dir",
+    "dist": "electron-builder --win --x64",
+    "package": "electron-builder --win --x64 --publish never",
+    "make": "electron-forge make"  // Legacy Forge command
+  },
+  "devDependencies": {
+    "electron": "22.3.24",
+    "electron-builder": "^24.6.3",
+    "@electron-forge/cli": "6.0.5",    // Optional (remove if unused)
+    "@electron-forge/maker-squirrel": "6.0.5"  // Optional
+  },
+  "build": {
+    "appId": "com.izerdm.militaryplanner",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico",
+      "publisherName": "IzerDM"  // For code signing
+    }
+  },
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "Military Duty Planner",  // Now matches productName
+            "setupIcon": "assets/icon.ico",
+            "loadingGif": "assets/installer.gif",
+            "authors": "IzerDM",             // Matches author
+            "description": "Military Duty Planning Application"  // Matches description
+          }
+        }
+      ]
+    }
+  }
+}
